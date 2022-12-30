@@ -1,26 +1,29 @@
 // Créez un programme qui affiche un rectangle dans le terminal.
-
-const width = process.argv[2];
-const height = process.argv[3];
-
-if (!width || !height || isNaN(width) || isNaN(height)) {
-  console.error("Les arguments doivent être des nombres non nuls");
-  process.exit(1);
-}
-
 function drawRectangle(width, height) {
+  // On vérifie que les arguments sont bien des nombres entiers positifs
+  if (isNaN(width) || isNaN(height) || width <= 0 || height <= 0) {
+    console.error("Les arguments doivent être des nombres entiers positifs");
+    return;
+  }
+
+  // Si width et height valent 1, on affiche simplement un o
+  if (width == 1 && height == 1) {
+    console.log("o");
+    return;
+  }
+
+  // On affiche le rectangle
   for (let i = 0; i < height; i++) {
-    let row = '';
-    for (let j = 0; j < width; j++) {
-      if (i === 0 || i === height - 1) {
-        row += 'o';
-      } else if (j === 0 || j === width - 1) {
-        row += '|';
-      } else {
-        row += ' ';
-      } 
+    if (i == 0 || i == height - 1) {
+      console.log("o" + "-".repeat(width - 2) + "o");
+    } else {
+      console.log("|" + " ".repeat(width - 2) + "|");
     }
-    console.log(row);
   }
 }
-drawRectangle(width, height);
+
+// On appelle la fonction avec les arguments de la ligne de commande
+drawRectangle(process.argv[2], process.argv[3]);
+
+
+
