@@ -24,6 +24,7 @@ function tokenize(input) {
       while (scanner < input.length && /[0-9\.]/.test(input[scanner])) {
         // Collect all the digits
         digits += input[scanner++];
+        console.log(digits);
       }
 
       // Convert the digits to a number and push the number to the array of tokens
@@ -33,7 +34,7 @@ function tokenize(input) {
     }
 
     // If the character is a symbol...
-    if (/[+\-/*(),^<>=]/.test(char)) {
+    if (/[%/+\-/*(),^<>=]/.test(char)) {
       // Push it to the array of tokens
       tokens.push(char);
       scanner++;
@@ -96,7 +97,7 @@ function toRPN(tokens) {
     }
 
     // If the token is an operator or a function name...
-    if (/[+\-/*<>=^A-Z]/.test(token)) {
+    if (/[%/+\-/*<>=^A-Z]/.test(token)) {
       // While there are operators in the `operators` stack with a higher
       // precedence than the current token, we'll unwind them `operators` on to `out`
       while (shouldUnwindOperatorStack(operators, token)) {
@@ -152,10 +153,11 @@ function toRPN(tokens) {
 }
 
 // BODMAS, PEMDAS
-// Exponentiation > [multiplication, division] > [addition, subtraction]
+// Exponentiation > [multiplication, division, modulo] > [addition, subtraction]
 const precedence = {
   '^': 3,
   '*': 2,
+  '%': 2,
   '/': 2,
   '+': 1,
   '-': 1,
@@ -183,7 +185,7 @@ function evalRPN(rpn) {
     const token = rpn[i];
 
     // If the token is an operator...
-    if (/[+\-/*^<>=]/.test(token)) {
+    if (/[%/+\-/*^<>=]/.test(token)) {
       // Operate on the stack and push the result back on to the stack
       stack.push(operate(token, stack));
       continue;
@@ -241,6 +243,8 @@ function operate(operator, stack) {
       return a - b;
     case '*':
       return a * b;
+    case '%':
+      return a % b;
     case '/':
       return a / b;
     case '^':
@@ -269,6 +273,6 @@ function evaluate(input) {
 }
 
 
-//const chaine = "4 + 21 * (1 - 2 / 2) + 38";
+//const chaine = "4 + 21 * (1 - 5 % 2) + 38";
 const arg = process.argv.slice(2).toString();
 console.log(evaluate(arg));
