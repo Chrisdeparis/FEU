@@ -256,49 +256,7 @@ function operate(operator, stack) {
   }
 }
 
-/**
- * Returns the result of applying the function onto the stack.
- *
- * Functions may have any number of arguments. But each function must have a
- * definite number of arguments. i.e. X(a, b) and Y(a, b, c) are possible, but
- * X(a, b) and X(a, b, c) are not possible.
- *
- * The function arguments are in right-to-left order in the stack, i.e. the rightmost
- * argument is at the top of the stack, and so on.
- */
-function apply(func, stack) {
-  // MAX(a, b) returns the larger of a and b
-  if (func === 'MAX') {
-    const b = stack.pop();
-    const a = stack.pop();
-    return Math.max(a, b);
-  }
 
-  // SQRT(a) returns the square-root of a
-  if (func === 'SQRT') {
-    const a = stack.pop();
-    return Math.sqrt(a);
-  }
-
-  // IF(a, b, c) returns b if a is true. Else, it returns c
-  if (func === 'IF') {
-    const ifFalse = stack.pop();
-    const ifTrue = stack.pop();
-    const predicate = stack.pop();
-    return predicate ? ifTrue : ifFalse;
-  }
-
-  // SET(#a, b) sets the variable a to the value b
-  if (func === 'SET') {
-    const value = stack.pop();
-    const key = stack.pop();
-    environment[key.slice(1)] = value;
-    return value;
-  }
-
-  // If we can't recognize the function, we'll throw an error
-  throw new Error(`Undefined function: ${func}`);
-}
 
 /**
  * Finally, in the `evaluator` function, we'll link all stages
