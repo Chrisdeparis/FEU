@@ -133,5 +133,9 @@ function evaluate(input) {
 }
 
 
-const chaine = process.argv.slice(2).toString();  
-console.log(evaluate(chaine));
+const chaine = process.argv.slice(2).toString(); 
+if(!chaine) {
+  console.log('erreur d\'argument');
+} else {
+  console.log(evaluate(chaine));
+}
