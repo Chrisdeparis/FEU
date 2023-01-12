@@ -38,6 +38,33 @@ function findShape(board, shape) {
   return { shapeFound, coordinates };
 }
 
+
+function compareAndDisplay(board, shape) {
+  let modifiedBoard = JSON.parse(JSON.stringify(board));
+  for (let i = 0; i < board.length; i++) {
+      let row = "";
+      for (let j = 0; j < board[i].length; j++) {
+          let match = false;
+          if(i < shape.length) {
+              for (let y = 0; y < shape[i].length; y++) {
+                  if (shape[i][y].char === j && shape[i][y].value !== ' ') {
+                      modifiedBoard[i][j].value = shape[i][y].value;
+                      match = true;
+                      break;
+                  }
+              }
+          }
+          if (match) {
+              row += modifiedBoard[i][j].value;
+          } else {
+              row += "-";
+          }
+      }
+      console.log(row);
+  }
+}
+
+
 const main = (boardFile, shapeFile) => {
   fs.readFile(boardFile, "utf8", (err, boardData) => {
     if (err) {
@@ -60,7 +87,6 @@ const main = (boardFile, shapeFile) => {
           });
       });
       console.log(newBoard);
-
       const shape = shapeData.split("\n").filter((x) => x);
       // composition unitaire du shape file to_find
       const newShape = shape.map((item, lineIndex) => {
@@ -71,16 +97,22 @@ const main = (boardFile, shapeFile) => {
             return { line: lineIndex, char: charIndex, value: char };
           });
       });
-      console.log(newShape);
+      // console.log(newShape);
       const result = findShape(newBoard, newShape);
-      console.log(result);
+
       if (result) {
         const solution = result.coordinates.filter(
           (coordinate) => coordinate.line === 1
         );
-        let coordinate = solution[0];
-        let formattedCoordinate = `${coordinate.char}, ${coordinate.line}`;
-        console.log("Trouvé ! Coordonnées : "+formattedCoordinate);
+        if (!solution[0]) {
+          console.log("Introuvable");
+        } else {
+          let coordinate = solution[0];
+          let formattedCoordinate = `${coordinate.char}, ${coordinate.line}`;
+          console.log("Trouvé ! Coordonnées : " + formattedCoordinate);
+          // displayShapeOnBoard(newBoard, newShape, 1, 1);
+          compareAndDisplay(newBoard, newShape);
+        }
       } else {
         console.log("Introuvable");
       }
