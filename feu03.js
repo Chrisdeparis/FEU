@@ -38,29 +38,6 @@ function findShape(board, shape) {
   return { shapeFound, coordinates };
 }
 
-function compareAndDisplay(matrix, shape) {
-  let board = "";
-  for (let i = 0; i < matrix.length; i++) {
-    for (let j = 0; j < matrix[i].length; j++) {
-      if (matrix[i][j].value === shape) {
-        board += matrix[i][j].value;
-      } else if (matrix[i][j].value === "0") {
-        board += "-";
-      } else {
-        board += matrix[i][j].value;
-      }
-    }
-    board += "\n";
-  }
-  console.log(board);
-}
-
-function placeShape(board, shapeCoordinates, shape) {
-  shapeCoordinates.forEach((coordinate) => {
-    board[coordinate.line][coordinate.char].value = shape;
-  });
-}
-
 function getBoardModel(board, shape, shapeStartX, shapeStartY) {
   let model = '';
 
@@ -77,11 +54,6 @@ function getBoardModel(board, shape, shapeStartX, shapeStartY) {
   }
   return model;
 }
-
-
-
-
-
 
 const main = (boardFile, shapeFile) => {
   fs.readFile(boardFile, "utf8", (err, boardData) => {
@@ -131,13 +103,10 @@ const main = (boardFile, shapeFile) => {
           // console.log(positionShape);
           let formattedCoordinate = `${coordinate.char}, ${coordinate.line}`;
           console.log("Trouvé ! Coordonnées : " + formattedCoordinate);
-          // compareAndDisplay(newBoard, newShape);
           // ecrire la forme dans le board avec tiret
           const shapeStartX = result.coordinates[0].line;
           const shapeStartY = result.coordinates[0].char;
           console.log(getBoardModel(newBoard, newShape, shapeStartX, shapeStartY));
-          
-
         }
       } else {
         console.log("Introuvable");
