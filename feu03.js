@@ -38,31 +38,49 @@ function findShape(board, shape) {
   return { shapeFound, coordinates };
 }
 
-
-function compareAndDisplay(board, shape) {
-  let modifiedBoard = JSON.parse(JSON.stringify(board));
-  for (let i = 0; i < board.length; i++) {
-      let row = "";
-      for (let j = 0; j < board[i].length; j++) {
-          let match = false;
-          if(i < shape.length) {
-              for (let y = 0; y < shape[i].length; y++) {
-                  if (shape[i][y].char === j && shape[i][y].value !== ' ') {
-                      modifiedBoard[i][j].value = shape[i][y].value;
-                      match = true;
-                      break;
-                  }
-              }
-          }
-          if (match) {
-              row += modifiedBoard[i][j].value;
-          } else {
-              row += "-";
-          }
+function compareAndDisplay(matrix, shape) {
+  let board = "";
+  for (let i = 0; i < matrix.length; i++) {
+    for (let j = 0; j < matrix[i].length; j++) {
+      if (matrix[i][j].value === shape) {
+        board += matrix[i][j].value;
+      } else if (matrix[i][j].value === "0") {
+        board += "-";
+      } else {
+        board += matrix[i][j].value;
       }
-      console.log(row);
+    }
+    board += "\n";
   }
+  console.log(board);
 }
+
+function placeShape(board, shapeCoordinates, shape) {
+  shapeCoordinates.forEach((coordinate) => {
+    board[coordinate.line][coordinate.char].value = shape;
+  });
+}
+
+function getBoardModel(board, shape, shapeStartX, shapeStartY) {
+  let model = '';
+
+  for (let i = 0; i < board.length; i++) {
+    for (let j = 0; j < board[i].length; j++) {
+      let char = '-';
+      if (i >= shapeStartX && i < shapeStartX + shape.length && j >= shapeStartY && j < shapeStartY + shape[i-shapeStartX].length && 
+          board[i][j].value === shape[i-shapeStartX][j-shapeStartY].value) {
+        char = board[i][j].value;
+      }
+      model += char;
+    }
+    model += '\n';
+  }
+  return model;
+}
+
+
+
+
 
 
 const main = (boardFile, shapeFile) => {
@@ -86,7 +104,7 @@ const main = (boardFile, shapeFile) => {
             return { line: lineIndex, char: charIndex, value: char };
           });
       });
-      console.log(newBoard);
+
       const shape = shapeData.split("\n").filter((x) => x);
       // composition unitaire du shape file to_find
       const newShape = shape.map((item, lineIndex) => {
@@ -97,7 +115,9 @@ const main = (boardFile, shapeFile) => {
             return { line: lineIndex, char: charIndex, value: char };
           });
       });
-      // console.log(newShape);
+
+      const positionShape = {};
+      positionShape.content = newShape;
       const result = findShape(newBoard, newShape);
 
       if (result) {
@@ -108,10 +128,16 @@ const main = (boardFile, shapeFile) => {
           console.log("Introuvable");
         } else {
           let coordinate = solution[0];
+          // console.log(positionShape);
           let formattedCoordinate = `${coordinate.char}, ${coordinate.line}`;
           console.log("Trouvé ! Coordonnées : " + formattedCoordinate);
-          // displayShapeOnBoard(newBoard, newShape, 1, 1);
-          compareAndDisplay(newBoard, newShape);
+          // compareAndDisplay(newBoard, newShape);
+          // ecrire la forme dans le board avec tiret
+          const shapeStartX = result.coordinates[0].line;
+          const shapeStartY = result.coordinates[0].char;
+          console.log(getBoardModel(newBoard, newShape, shapeStartX, shapeStartY));
+          
+
         }
       } else {
         console.log("Introuvable");
