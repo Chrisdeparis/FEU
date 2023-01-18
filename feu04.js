@@ -1,11 +1,19 @@
 const fs = require("fs");
 
+// en cas d'arguments vides
+args = process.argv.slice(2);
+if (args.length === 0) {
+  console.log("No grid was provided");
+  return;
+}
+
 const main = (boardFile) => {
   fs.readFile(boardFile, "utf8", (err, boardData) => {
     if (err) {
       console.error(err);
       return;
     }
+
     const board = boardData.split("\n").filter((x) => x);
     // composition unitaire du board file
     const newBoard = board.map((item, lineIndex) => {
@@ -24,9 +32,12 @@ const main = (boardFile) => {
       });
     });
 
-
     // remplacer les cases vides
     function fillMissingValues(grid) {
+      if (!grid || grid.length === 0) {
+        console.log("No grid was provided");
+        return;
+      }
       for (let row = 0; row < 9; row++) {
         for (let col = 0; col < 9; col++) {
           if (grid[row][col] === ".") {
