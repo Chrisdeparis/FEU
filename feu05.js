@@ -8,7 +8,7 @@ function readMap(file) {
     // le plateau n'a pas la première ligne
     const plateau = lines.slice(1);
     const firstLine = lines[0].replace(/\s/g, "");
-    const [size, empty, obstacle, full] = lines[0].replace(/\s/g, "");
+    const [size, empty, obstacle, full] = firstLine
 
     if (parseInt(size) < 1 || parseInt(size) !== plateau.length) {
       throw new Error("Carte invalide");
