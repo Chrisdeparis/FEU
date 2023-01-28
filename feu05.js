@@ -9,9 +9,18 @@ function readMap(file) {
     const plateau = lines.slice(1);
     const firstLine = lines[0].replace(/\s/g, "");
     const [size, empty, obstacle, full] = firstLine;
-
+    // longueur du plateau
     if (parseInt(size) < 1 || parseInt(size) !== plateau.length) {
       throw new Error("Plateau invalide");
+    }
+    // longeur des lignes identiques
+    if (plateau.some(line => line.length !== plateau[0].length)) {
+      throw new Error("Carte invalide");
+    }
+    // caractères présents sont ceux de la première ligne
+    const regex = new RegExp(`[${empty}${obstacle}${full}]`);
+    if (plateau.some((line) => !regex.test(line))) {
+      throw new Error("Carte invalide");
     }
 
     return { size, empty, obstacle, full, map: plateau };
@@ -34,7 +43,11 @@ function findLargestSquare(map, empty, full) {
         while (canExpand) {
           for (let i = y; i < y + currentSize; i++) {
             for (let j = x; j < x + currentSize; j++) {
-              if (i >= map.length || j >= map[i].length || map[i][j] !== empty) {
+              if (
+                i >= map.length ||
+                j >= map[i].length ||
+                map[i][j] !== empty
+              ) {
                 canExpand = false;
                 break;
               }
